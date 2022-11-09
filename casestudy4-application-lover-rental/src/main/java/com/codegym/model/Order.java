@@ -10,8 +10,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "orders")
 @Getter
@@ -25,8 +25,6 @@ public class Order {
 
     @NotNull
     private int timeRent;
-    @NotNull
-    private long totalPrice;
     @NotNull
     private String status;
 
