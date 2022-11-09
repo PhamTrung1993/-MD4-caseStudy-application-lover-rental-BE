@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -49,7 +48,7 @@ public class Provider {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "provider_service", joinColumns = {@JoinColumn(name = "provider_id")},
             inverseJoinColumns = {@JoinColumn(name = "service_id")})
-    private Set<Service> service;
+    private Set<Services> service;
     private int price;
     private String status;
     private long hasBeenHired;

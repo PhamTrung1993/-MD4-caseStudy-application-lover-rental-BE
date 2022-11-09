@@ -32,7 +32,8 @@ public class ProviderForm {
     @NotEmpty
     @Pattern(regexp = ".*.jpg|img", message = "Incorrect file format")
     private MultipartFile avatar;
-    private Set<Image> image ;
+
+    private Set<MultipartFile> image ;
     private String height;
     private String weight;
     private String hobby;
