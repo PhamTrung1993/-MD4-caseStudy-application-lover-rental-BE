@@ -1,4 +1,12 @@
 package com.codegym.repository.image;
 
-public interface IImageRepository {
+import com.codegym.model.Image;
+import com.codegym.model.Provider;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface IImageRepository extends JpaRepository<Image, Long> {
+    Iterable<Image> findAllByProvider(Provider provider);
+    Iterable<Image> findAllImageByProviderId(Long id);
 }
