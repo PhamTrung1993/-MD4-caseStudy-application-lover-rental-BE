@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -33,11 +34,14 @@ public class ProviderForm {
     @Pattern(regexp = ".*.jpg|img", message = "Incorrect file format")
     private MultipartFile avatar;
 
-    private Set<MultipartFile> image ;
+    private List<MultipartFile> image ;
+
+    private Set<Services> service;
+    private int price;
+    private String status;
     private String height;
     private String weight;
     private String hobby;
     private String description;
     private String facebook;
-
 }
