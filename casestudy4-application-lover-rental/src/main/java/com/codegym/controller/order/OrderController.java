@@ -19,17 +19,17 @@ public class OrderController {
     private IOrderService orderService;
 
     @Autowired
-//    private IProviderService providerService;
+    private IProviderService providerService;
 
 //    show tất cả order
     @GetMapping("/orders")
     public ResponseEntity<Iterable<Order>> findAll() {
-        return new ResponseEntity<>(orderService.getAllOrder(), HttpStatus.OK);
+        return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
     }
 
     //    show order theo khách hàng
-    @GetMapping("/renter/{id}/orders")
-    public ResponseEntity<Iterable<Order>> findAllOrderByRenter(@PathVariable Long id) {
+    @GetMapping("/user/{id}/orders")
+    public ResponseEntity<Iterable<Order>> findAllOrderByRenter(@PathVariable("id") Long id) {
         return new ResponseEntity<>(orderService.getAllOrderByRenter(id), HttpStatus.OK);
     }
 

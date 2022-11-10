@@ -25,8 +25,8 @@ public class ProviderController {
     @Autowired
     private Environment env;
 
-    @Value("${upload.path}")
-    private String fileUpload;
+//    @Value("${upload.path}")
+//    private String fileUpload;
 
     @Autowired
     private IImageService imageService;
@@ -37,10 +37,10 @@ public class ProviderController {
     @Autowired
     private ISerProviderService serProviderService;
 
-    @ModelAttribute("Image")
-    public Iterable<Image> allProvinces() {
-        return imageService.findAll();
-    }
+//    @ModelAttribute("Image")
+//    public Iterable<Image> allProvinces() {
+//        return imageService.findAll();
+//    }
 
     @GetMapping("/lists")
     public ResponseEntity<Iterable<Provider>> showAllUser() {

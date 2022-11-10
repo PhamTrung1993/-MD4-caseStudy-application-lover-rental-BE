@@ -33,14 +33,14 @@ public class ImageService implements IImageService {
         imageRepository.deleteById(id);
     }
 
-    @Override
-    public Iterable<Image> findAllByProvider(Provider provider) {
-        return imageRepository.findAllByProvider(provider);
-    }
+//    @Override
+//    public Iterable<Image> findAllByProvider(Provider provider) {
+//        return imageRepository.findAllByProvider(provider);
+//    }
 
-    @Override
-    public Iterable<Image> findAllImageByProviderId(Long id) {
-        return imageRepository.findAllImageByProviderId(id);
-    }
+//    @Override
+//    public Iterable<Image> findAllImageByProviderId(Long id) {
+//        return imageRepository.findAllImageByProviderId(id);
+//    }
 
 }

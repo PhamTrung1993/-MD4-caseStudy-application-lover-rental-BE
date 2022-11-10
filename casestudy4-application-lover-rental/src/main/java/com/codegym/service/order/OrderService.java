@@ -36,12 +36,12 @@ public class OrderService implements IOrderService {
 
     @Override
     public Iterable<Order> getAllOrderByRenter(Long id) {
-        return null;
+        return orderRepository.getAllOrderByRenter(id);
     }
 
     @Override
     public Iterable<Order> getAllOrderByProvider(Long id) {
-        return null;
+        return orderRepository.getAllOrderByProvider(id);
     }
 
     @Override
