@@ -3,6 +3,7 @@ package com.codegym.controller.provider;
 import com.codegym.model.Image;
 import com.codegym.model.Provider;
 import com.codegym.model.ProviderForm;
+import com.codegym.model.Services;
 import com.codegym.service.SerProvice.ISerProviderService;
 import com.codegym.service.image.IImageService;
 import com.codegym.service.provider.IProviderService;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @RestController
@@ -25,8 +27,8 @@ public class ProviderController {
     @Autowired
     private Environment env;
 
-    @Value("${upload.path}")
-    private String fileUpload;
+//    @Value("${upload.path}")
+//    private String fileUpload;
 
     @Autowired
     private IImageService imageService;
@@ -77,5 +79,42 @@ public class ProviderController {
         }
         providerService.delete(id);
         return new ResponseEntity<>(customerOptional.get(), HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/rent8Female")
+    public ResponseEntity<Iterable<Provider>> getProviderByHasBeenHire8female() {
+        Iterable<Provider> providers = providerService.getProviderByHasBeenHired8female();
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+    }
+
+    @GetMapping("/rent4Male")
+    public ResponseEntity<Iterable<Provider>> getProviderByHasBeenHire4male() {
+        Iterable<Provider> providers = providerService.getProviderByHasBeenHired4male();
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+    }
+    @GetMapping("/rentListForGender/{gender}")
+    public ResponseEntity<Iterable<Provider>> findProviderForGender(@PathVariable String gender) {
+        if (gender.equals("male")) {
+            gender = "female";
+        } else if (gender.equals("female")) {
+            gender = "male";
+        }
+        Iterable<Provider> providers = providerService.findAllByGender(gender);
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+    }
+    @GetMapping("/findProviderByFullName")
+    public ResponseEntity<Iterable<Provider>> findProviderByFullName( String queryName) {
+        Iterable<Provider> providers = providerService.findAllByFullName('%' + queryName + '%');
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+    }
+    @GetMapping("/findAllByCity/{city}")
+    public ResponseEntity<Iterable<Provider>> findProviderByCity(@PathVariable String city) {
+        Iterable<Provider> providers = providerService.list12ProviderSuitableForCity(city);
+        return  new ResponseEntity<>(providers, HttpStatus.OK);
+    }
+    @GetMapping("/serProvidedByUser")
+    public ResponseEntity<ArrayList<Services>> get3SerProviderRandom(Long userId) {
+        ArrayList<Services> serProviders = providerService.get3Service(userId);
+        return new ResponseEntity<>(serProviders, HttpStatus.OK);
     }
 }
