@@ -4,7 +4,6 @@ package com.codegym.controller.provider;
 import com.codegym.model.Image;
 import com.codegym.model.Provider;
 import com.codegym.model.ProviderForm;
-import com.codegym.service.SerProvice.ISerProviderService;
 import com.codegym.service.image.IImageService;
 import com.codegym.service.provider.IProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import org.springframework.web.servlet.view.RedirectView;
 
 
 import java.io.File;
@@ -55,11 +53,6 @@ public class ProviderController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<Provider> saveProvider(@RequestBody Provider provider) {
-        return new ResponseEntity<>(providerService.save(provider), HttpStatus.CREATED);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Provider> findProviderById(@PathVariable Long id) {
         Optional<Provider> customerOptional = providerService.findById(id);
@@ -70,13 +63,18 @@ public class ProviderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Provider> updateProvider(@PathVariable Long id, @RequestBody Provider provider) {
-        Optional<Provider> customerOptional = providerService.findById(id);
-        if (!customerOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Provider> updateProvider(@PathVariable Long id, @RequestBody ProviderForm providerForm) throws IOException {
+        if (id != null){
+            providerForm.setId(id);
+            MultipartFile avatar = providerForm.getAvatar();
+            Provider provider = new Provider();
+            provider.setAvatar(avatar.getOriginalFilename());
+            provider.buildByProvider(providerForm);
+            FileCopyUtils.copy(avatar.getBytes(), new File(fileUpload + "/" + "avatar" + providerForm.getId()+ "/" + avatar.getOriginalFilename()));
+            providerService.save(provider);
+            return new ResponseEntity<>(provider, HttpStatus.OK);
         }
-        provider.setId(customerOptional.get().getId());
-        return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/{id}")
@@ -90,36 +88,29 @@ public class ProviderController {
     }
 
     @PostMapping("/save")
-    public RedirectView saveProvider(@ModelAttribute ProviderForm providerFrom) {
-        MultipartFile avatar = providerFrom.getAvatar();
-        List<MultipartFile> multipartFiles = providerFrom.getImage();
+    public ResponseEntity<Provider> create(ProviderForm providerForm, BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasFieldErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        MultipartFile avatar = providerForm.getAvatar();
+        List<MultipartFile> multipartFiles = providerForm.getImage();
         Provider provider = new Provider();
-        if (avatar != null) {
-            String fileAvatarName = "/avatar" + providerFrom.getId() + "/" + avatar.getOriginalFilename();
-            try {
-                FileCopyUtils.copy(providerFrom.getAvatar().getBytes(), new File(fileUpload + fileAvatarName));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (providerForm.getId() != null) {
+            provider.setId(providerForm.getId());
         }
-
+        provider.setAvatar(avatar.getOriginalFilename());
+        FileCopyUtils.copy(avatar.getBytes(), new File(fileUpload + "/" + "avatar" + providerForm.getId()+ "/" + avatar.getOriginalFilename()));
+        provider.buildByProvider(providerForm);
+        providerService.save(provider);
         if (multipartFiles != null) {
-            for (int i = 0; i < multipartFiles.size(); i++) {
-                for (MultipartFile multipartFiler : multipartFiles) {
-                    String fileAvatarName = "/image" + providerFrom.getId() + "/" + multipartFiler.getOriginalFilename();
-                    try {
-                        FileCopyUtils.copy(multipartFiler.getBytes(), new File(fileUpload + fileAvatarName));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Image image = new Image();
-                    image.setImageName(multipartFiler.getOriginalFilename());
-                    provider.buildByProvider(providerFrom);
-                    imageService.save(image);
-                }
+            for (MultipartFile multipartFiler : multipartFiles) {
+                Image image = new Image();
+                FileCopyUtils.copy(multipartFiler.getBytes(), new File(fileUpload + "/" + "image" + providerForm.getId()+ "/" + multipartFiler.getOriginalFilename()));
+                image.setImageName(multipartFiler.getOriginalFilename());
+                provider.getImage().add(image);
+                imageService.save(image);
             }
-            providerService.save(provider);
         }
-        return new RedirectView("/lists");
+        return new ResponseEntity<>(provider, HttpStatus.CREATED);
     }
 }

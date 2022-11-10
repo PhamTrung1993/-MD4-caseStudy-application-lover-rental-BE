@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IImageRepository extends JpaRepository<Image, Long> {
-    Iterable<Image> findAllByProvider(Provider provider);
-    Iterable<Image> findAllImageByProviderId(Long id);
+//    Iterable<Image> findAllByProvider(Provider provider);
+//    Iterable<Image> findAllImageByProviderId(Long id);
 }
