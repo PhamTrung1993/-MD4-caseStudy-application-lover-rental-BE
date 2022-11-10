@@ -6,11 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.time.LocalDate;
+import javax.validation.constraints.*;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -24,7 +20,10 @@ public class Provider {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+
+    @NotEmpty
+    @Min(value = 18,message = "can't enter more less 18 ages")
+
     private int age;
 
     private String gender;
@@ -49,7 +48,7 @@ public class Provider {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "provider_service", joinColumns = {@JoinColumn(name = "provider_id")},
             inverseJoinColumns = {@JoinColumn(name = "service_id")})
-    private Set<Service> service;
+    private Set<Services> service;
     private int price;
     private String status;
     private long hasBeenHired;

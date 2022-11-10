@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Table(name = "service")
 @Getter
 @Setter
-public class Service {
+public class Services {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

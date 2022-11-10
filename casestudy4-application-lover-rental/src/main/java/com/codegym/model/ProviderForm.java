@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -18,13 +19,21 @@ public class ProviderForm {
     private Long id;
     @NotEmpty
     @Min(value = 18, message = "can't enter more less 18 Age")
+    @Pattern(regexp = "^[0-9._]*$", message = "do not special characters")
     private int age;
+    @NotEmpty
     private String gender;
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String city;
+    @NotEmpty
     private String nationality;
+    @NotEmpty
+    @Pattern(regexp = ".*.jpg|img", message = "Incorrect file format")
     private MultipartFile avatar;
-    private Set<Image> image ;
+
+    private Set<MultipartFile> image ;
     private String height;
     private String weight;
     private String hobby;

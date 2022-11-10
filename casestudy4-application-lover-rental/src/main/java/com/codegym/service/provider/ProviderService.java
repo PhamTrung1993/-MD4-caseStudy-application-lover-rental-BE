@@ -3,9 +3,11 @@ package com.codegym.service.provider;
 import com.codegym.model.Provider;
 import com.codegym.repository.provider.IProviderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ProviderService implements IProviderService {
 
     @Autowired
@@ -18,16 +20,16 @@ public class ProviderService implements IProviderService {
 
     @Override
     public Optional<Provider> findById(Long id) {
-        return Optional.empty();
+        return providerRepository.findById(id);
     }
 
     @Override
     public Provider save(Provider provider) {
-        return null;
+        return providerRepository.save(provider);
     }
 
     @Override
     public void delete(Long id) {
-
+        providerRepository.deleteById(id);
     }
 }
