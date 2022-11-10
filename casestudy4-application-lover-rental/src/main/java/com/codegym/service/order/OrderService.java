@@ -46,7 +46,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public void removeOrder(Long id) {
-
+        orderRepository.deleteById(id);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public Iterable<Order> getAllCompletedOrder() {
-        return null;
+        return orderRepository.getAllCompletedOrder();
     }
 
     @Override

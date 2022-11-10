@@ -21,7 +21,7 @@ public class OrderController {
     @Autowired
     private IProviderService providerService;
 
-//    show tất cả order
+    //    show tất cả order
     @GetMapping("/orders")
     public ResponseEntity<Iterable<Order>> findAll() {
         return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
@@ -63,6 +63,14 @@ public class OrderController {
         order.setStatus(String.valueOf(statusId));
         orderService.save(order);
         return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+
+    //    xem tất cả order có trạng thái đã thuê
+    @GetMapping("/completedOrder")
+    public ResponseEntity<Iterable<Order>> getAllCompletedOrder() {
+        Iterable<Order> orders = orderService.getAllCompletedOrder();
+        return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
 }

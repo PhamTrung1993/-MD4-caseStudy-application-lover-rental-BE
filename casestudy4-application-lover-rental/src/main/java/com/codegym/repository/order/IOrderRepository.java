@@ -15,6 +15,8 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
     Iterable<Order> getAllOrderByRenter(@Param("demo") Long id);
 
     @Query(nativeQuery = true, value = "select * from orders where provider_id = :id")
-
     Iterable<Order> getAllOrderByProvider(@Param("id") Long id);
+
+    @Query(nativeQuery = true, value = "select * from orders where status = 'paid'")
+    Iterable<Order> getAllCompletedOrder();
 }
