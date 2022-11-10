@@ -42,6 +42,7 @@ public class LoginController {
             User currentUser = userService.findByUserName(user.getUserName());
             return ResponseEntity.ok(new JwtResponse(jwt, currentUser.getId(), userDetails.getUsername(), userDetails.getAuthorities()));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.ok("Tai khoan khong ton tai");
         }
     }

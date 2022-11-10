@@ -28,7 +28,7 @@ public class UserPrinciple implements UserDetails {
     }
 
     public static UserPrinciple build(User user) {
-        Set<Role> roleSet = null;
+        Set<Role> roleSet = new HashSet<>();
         roleSet.add(user.getRole());
         List<GrantedAuthority> authorities = roleSet.stream().map(role ->
                 new SimpleGrantedAuthority(role.getName())

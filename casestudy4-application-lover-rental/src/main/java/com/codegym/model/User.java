@@ -8,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,5 +35,6 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
     private String vip;
-
+    public User(String email, String password, Role role) {
+    }
 }
