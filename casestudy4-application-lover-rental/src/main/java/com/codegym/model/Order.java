@@ -25,8 +25,7 @@ public class Order {
 
     @NotNull
     private int timeRent;
-    @NotNull
-    private long totalPrice;
+
     @NotNull
     private String status;
 
