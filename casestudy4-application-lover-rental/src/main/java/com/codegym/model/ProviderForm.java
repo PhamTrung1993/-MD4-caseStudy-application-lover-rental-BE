@@ -35,13 +35,15 @@ public class ProviderForm {
     private MultipartFile avatar;
 
     private List<MultipartFile> image ;
-
-    private Set<Services> service;
-    private int price;
-    private String status;
     private String height;
     private String weight;
     private String hobby;
     private String description;
     private String facebook;
+    private Set<Services> service;
+    private int price;
+    private String status;
+    private long hasBeenHired;
+    private long view;
+    private User user;
 }

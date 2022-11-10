@@ -5,6 +5,6 @@ import com.codegym.model.Provider;
 import com.codegym.service.IGeneralService;
 
 public interface IImageService extends IGeneralService<Image> {
-    Iterable<Image> findAllByProvider(Provider provider);
+//    Iterable<Image> findAllByProvider(Provider provider);
     Iterable<Image> findAllImageByProviderId(Long id);
 }
