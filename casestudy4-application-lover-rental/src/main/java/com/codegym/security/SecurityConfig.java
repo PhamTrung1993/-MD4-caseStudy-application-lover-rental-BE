@@ -1,5 +1,8 @@
 package com.codegym.security;
 
+import com.codegym.config.custom.JwtAuthenticationFilter;
+import com.codegym.config.custom.RestAuthenticationEntryPoint;
+import com.codegym.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
