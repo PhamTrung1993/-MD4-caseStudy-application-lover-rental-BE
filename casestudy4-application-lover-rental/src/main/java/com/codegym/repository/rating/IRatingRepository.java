@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface IRatingRepository extends JpaRepository<Rating, Long> {
-    @Query(nativeQuery = true, value = "select * from rating where provider_id = :id;")
+    @Query(nativeQuery = true, value = "select * from rating where provider_id = :id")
     Iterable<Rating>findByProvider_Id(@Param("id") Long id);
 }
