@@ -6,8 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,13 +20,16 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @NotEmpty
+    @Size(min = 6, max = 18, message = "Username must be between 6 and 18 characters")
     private String userName;
-    @NotNull
+    @NotEmpty
+    @Size(min = 6, max = 18, message = "Username must be between 6 and 18 characters")
     private String password;
-    @NotNull
+    @NotEmpty
+    @Email( message = "Please enter the correct email format")
     private String email;
-    @NotNull
+    @Pattern(regexp = "((09|03|07|08|05)+([0-9]{8})\\b)", message = "Please enter the correct phone number format")
     private String phone;
 
     private LocalDate joinDate;
@@ -34,5 +38,6 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
     private String vip;
-
+    public User(String email, String password, Role role) {
+    }
 }

@@ -19,4 +19,8 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String imageName;
+
+    public Image(String imageName) {
+        this.imageName = imageName;
+    }
 }
