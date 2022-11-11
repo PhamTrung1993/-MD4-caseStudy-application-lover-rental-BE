@@ -1,15 +1,11 @@
 package com.codegym.controller.provider;
 
 
-import com.codegym.model.Image;
-import com.codegym.model.Provider;
-import com.codegym.model.ProviderForm;
-
-import com.codegym.model.Services;
-import com.codegym.service.SerProvice.ISerProviderService;
+import com.codegym.model.*;
 
 import com.codegym.service.image.IImageService;
 import com.codegym.service.provider.IProviderService;
+import com.codegym.service.rating.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -37,6 +33,10 @@ import java.util.Optional;
 @PropertySource("classpath:application.properties")
 @RequestMapping("/provider")
 public class ProviderController {
+
+    @Autowired
+    IRatingService ratingService;
+
     @Autowired
     private Environment env;
 
@@ -158,5 +158,31 @@ public class ProviderController {
         ArrayList<Services> serProviders = providerService.get3Service(userId);
         return new ResponseEntity<>(serProviders, HttpStatus.OK);
 
+    }
+    @PostMapping("/comment/{id}")
+    public ResponseEntity<Rating> insertComment(@PathVariable Long id,@RequestBody Rating rating, BindingResult bindingResult) throws IOException{
+        if (bindingResult.hasFieldErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Rating rating1 = new Rating();
+        Provider provider = providerService.findById(id).get();
+        rating1.setProvider(provider);
+        rating1.setComment(rating.getComment());
+        return new ResponseEntity<>(rating1, HttpStatus.OK);
+    }
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<Rating> delComment(@PathVariable Long id){
+        Optional<Rating> rating = ratingService.findById(id);
+        if (!rating.isPresent()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ratingService.delete(id);
+        return new ResponseEntity<>(rating.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/showRatingProvider/{id}")
+    private ResponseEntity<Iterable<Rating>> showRatingProvider(@PathVariable Long id){
+        Iterable<Rating> ratingProvider = ratingService.findByProvider_Id(id);
+        return new ResponseEntity<>(ratingProvider, HttpStatus.OK);
     }
 }
