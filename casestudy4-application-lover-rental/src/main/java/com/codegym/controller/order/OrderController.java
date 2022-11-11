@@ -58,9 +58,9 @@ public class OrderController {
 
     //    sủa trạng thái chưa biết dúng hay sai
     @PutMapping("/orders/{id}/changeStatus")
-    public ResponseEntity<Order> changeStatus(@PathVariable Long id, Long statusId) {
+    public ResponseEntity<Order> changeStatus(@PathVariable Long id, String status) {
         Order order = orderService.findById(id).get();
-        order.setStatus(String.valueOf(statusId));
+        order.setStatus(status);
         orderService.save(order);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }

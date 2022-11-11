@@ -19,4 +19,7 @@ public interface IOrderRepository extends JpaRepository<Order, Long> {
 
     @Query(nativeQuery = true, value = "select * from orders where status = 'paid'")
     Iterable<Order> getAllCompletedOrder();
+
+    @Query(nativeQuery = true, value = "update orders set status = 'paid' where user_id = :id or provider_id = :id and status = 'notpaid'" )
+    Iterable<Order> changeStatus(@Param("id") Long id);
 }
