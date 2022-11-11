@@ -82,4 +82,9 @@ public class ProviderService implements IProviderService {
         return services;
     }
 
+    @Override
+    public Iterable<Provider> findAllByGenderContainingAndAgeContainingAndCity(String gender, String city, int fromAge, int toAge) {
+        return providerRepository.findAllByGenderContainingAndAgeContainingAndCity(gender, city, fromAge, toAge);
+    }
+
 }

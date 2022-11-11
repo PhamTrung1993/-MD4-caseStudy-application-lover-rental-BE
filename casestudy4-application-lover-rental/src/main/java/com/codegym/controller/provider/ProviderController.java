@@ -159,6 +159,7 @@ public class ProviderController {
         return new ResponseEntity<>(serProviders, HttpStatus.OK);
 
     }
+
     @PostMapping("/comment/{id}")
     public ResponseEntity<Rating> insertComment(@PathVariable Long id,@RequestBody Rating rating, BindingResult bindingResult) throws IOException{
         if (bindingResult.hasFieldErrors()){
@@ -181,8 +182,19 @@ public class ProviderController {
     }
 
     @GetMapping("/showRatingProvider/{id}")
-    private ResponseEntity<Iterable<Rating>> showRatingProvider(@PathVariable Long id){
+    private ResponseEntity<Iterable<Rating>> showRatingProvider(@PathVariable Long id) {
         Iterable<Rating> ratingProvider = ratingService.findByProvider_Id(id);
         return new ResponseEntity<>(ratingProvider, HttpStatus.OK);
+    }
+    @GetMapping("/findProviderByGenderAndCityAndAge")
+    public ResponseEntity<Iterable<Provider>> findProviderByGenderAndCityAndAge( String gender, String city, int fromAge, int toAge) {
+        Iterable<Provider> providers = providerService.findAllByGenderContainingAndAgeContainingAndCity(gender,'%' + city + '%', fromAge, toAge);
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+
+    }
+    @GetMapping("/rent6Provider")
+    private ResponseEntity<Iterable<Provider>> rent6Provider() {
+        Iterable<Provider> providers = providerService.get6ProviderByView();
+        return new ResponseEntity<>(providers, HttpStatus.OK);
     }
 }
