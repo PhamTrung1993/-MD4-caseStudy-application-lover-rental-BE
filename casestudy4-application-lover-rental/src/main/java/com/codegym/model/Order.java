@@ -25,6 +25,7 @@ public class Order {
 
     @NotNull
     private int timeRent;
+
     @NotNull
     private String status;
 
