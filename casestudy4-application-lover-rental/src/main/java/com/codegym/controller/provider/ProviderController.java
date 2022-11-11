@@ -159,4 +159,9 @@ public class ProviderController {
         return new ResponseEntity<>(serProviders, HttpStatus.OK);
 
     }
+    @GetMapping("/findProviderByGenderAndCityAndAge")
+    public ResponseEntity<Iterable<Provider>> findProviderByGenderAndCityAndAge( String gender, String city, int fromAge, int toAge) {
+        Iterable<Provider> providers = providerService.findAllByGenderContainingAndAgeContainingAndCity(gender,'%' + city + '%', fromAge, toAge);
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+    }
 }
