@@ -46,15 +46,6 @@ public class LoginController {
             return ResponseEntity.ok("Tai khoan khong ton tai");
         }
     }
-    @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody User user){
-        Set<Role> roles = new HashSet<>();
-        Role role = new Role();
-        role.setId(2L);
-        roles.add(role);
-        user.setRole(role);
-        return new ResponseEntity<>(userService.save(user), HttpStatus.OK);
-    }
 
     @GetMapping("/admin")
     public ResponseEntity<String> admin() {
