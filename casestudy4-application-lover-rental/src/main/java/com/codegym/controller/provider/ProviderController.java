@@ -79,17 +79,15 @@ public class ProviderController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @PutMapping("/updateService/{idP}/{idS}")
-    public ResponseEntity<Provider> updateUserOfProvider(@PathVariable Long idP, @PathVariable Long idS) throws IOException {
+    public ResponseEntity<Provider> updateUserOfProvider(@PathVariable Long idP, @PathVariable Long idU) throws IOException {
         providerService.get6ProviderByView();
         Optional<Provider> providerOptional = providerService.findById(idP);
-        Optional<Services> servicesOptional = iSerProviderService.findById(idS);
+        Optional<Services> servicesOptional = iSerProviderService.findById(idU);
         if (!providerOptional.isPresent() && !servicesOptional.isPresent()){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        Services services = servicesOptional.get();
-        Provider provider = providerOptional.get();
-        providerService.setService(provider.getId(),services.getId());
-        return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);
+        providerService.setService(idP,idU);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

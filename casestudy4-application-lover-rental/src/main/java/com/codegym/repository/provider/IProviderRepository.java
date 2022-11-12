@@ -39,6 +39,6 @@ public interface IProviderRepository extends JpaRepository<Provider, Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM provider where provider.id = (select max(provider.id) from provider)")
     Optional<Provider> getNewestProvider();
-    @Query(nativeQuery = true, value = "UPDATE `provider` SET `user_id` = :idU WHERE (`id` = :idP)")
+    @Query(nativeQuery = true, value = "UPDATE `provider` SET `user_id` = :idU WHERE `id` = :idP")
     Optional<Provider> getNewestProvider(@Param("idP") Long idP, @Param("idU") Long idU);
 }
