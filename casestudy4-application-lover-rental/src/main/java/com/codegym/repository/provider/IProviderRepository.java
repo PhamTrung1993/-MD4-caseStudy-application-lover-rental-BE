@@ -22,12 +22,17 @@ public interface IProviderRepository extends JpaRepository<Provider, Long> {
 //    @Query(value = "CALL `case4`.get_all_employee();", nativeQuery = true)
 //    Iterable<Provider> list12ProviderSuitableForGender(@Param("gender") String gender);
 
-    Iterable<Provider>findAllByGender(@Param("gender") String gender);
+    Iterable<Provider> findAllByGender(@Param("gender") String gender);
 
     @Query(value = "select * from provider where `city` like :city limit 12;", nativeQuery = true)
     Iterable<Provider> list12ProviderSuitableForCity(@Param("city") String city);
     @Query(value = "select services_id from (select services_id from provider_services where provider_id = :id) as dich_vu_theo_user limit 3;",nativeQuery = true)
     Iterable<BigInteger> get3Service(@Param("id") Long id);
+<<<<<<< HEAD
 
 
+=======
+    @Query(nativeQuery = true,value = "select * from provider where ((gender = :gender) and ((age between :fromAge and :toAge) or (city like :city ))) order by has_been_hired desc;")
+    Iterable<Provider>  findAllByGenderContainingAndAgeContainingAndCity(@Param("gender") String gender,@Param("city") String city,@Param("fromAge") int fromAge,@Param("toAge") int toAge);
+>>>>>>> 440e0e17376f2a5801823b430f84d37a6eaade9d
 }

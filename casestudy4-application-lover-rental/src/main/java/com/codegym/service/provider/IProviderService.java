@@ -18,4 +18,6 @@ public interface IProviderService extends IGeneralService<Provider> {
     Iterable<Provider> list12ProviderSuitableForCity(String city);
 
     ArrayList<Services> get3Service(Long id);
+
+    Iterable<Provider>  findAllByGenderContainingAndAgeContainingAndCity(String gender,String city,int fromAge, int toAge);
 }
