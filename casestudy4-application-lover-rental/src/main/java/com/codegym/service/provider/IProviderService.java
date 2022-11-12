@@ -3,9 +3,7 @@ package com.codegym.service.provider;
 import com.codegym.model.Provider;
 import com.codegym.model.Services;
 import com.codegym.service.IGeneralService;
-import org.springframework.data.repository.query.Param;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 
 public interface IProviderService extends IGeneralService<Provider> {

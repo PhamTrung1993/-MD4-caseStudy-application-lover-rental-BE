@@ -28,4 +28,6 @@ public interface IProviderRepository extends JpaRepository<Provider, Long> {
     Iterable<Provider> list12ProviderSuitableForCity(@Param("city") String city);
     @Query(value = "select services_id from (select services_id from provider_services where provider_id = :id) as dich_vu_theo_user limit 3;",nativeQuery = true)
     Iterable<BigInteger> get3Service(@Param("id") Long id);
+
+
 }

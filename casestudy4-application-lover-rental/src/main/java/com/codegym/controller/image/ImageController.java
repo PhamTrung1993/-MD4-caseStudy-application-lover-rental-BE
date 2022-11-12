@@ -40,7 +40,7 @@ public class ImageController {
             image.setId(imageForm.getId());
 
             image.setImageName(imageForm.getFileImage().getOriginalFilename());
-            FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + "/" + "image" + "/" + multipartFile.getOriginalFilename()));
+            FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + "/" + "saveimage" + "/" + multipartFile.getOriginalFilename()));
         }
         iImageService.save(image);
 
@@ -60,5 +60,10 @@ public class ImageController {
             new File(fileUpload + image1.getImageName()).delete();
         }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/allImage")
+    public ResponseEntity<Iterable<Image>> showAllImage(){
+        Iterable<Image> images = iImageService.findAll();
+        return new ResponseEntity<>(images, HttpStatus.OK);
     }
 }

@@ -1,7 +1,6 @@
 package com.codegym.service.image;
 
 import com.codegym.model.Image;
-import com.codegym.model.Provider;
 import com.codegym.repository.image.IImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

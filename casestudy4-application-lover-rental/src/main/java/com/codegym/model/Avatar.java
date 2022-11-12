@@ -7,25 +7,19 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
-@Table(name = "image")
-public class Image {
-
+@Table(name = "avatars")
+public class Avatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String imageName;
+    private String name;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "provider_id")
     private Provider provider;
-
-    public Image(String imageName) {
-        this.imageName = imageName;
-    }
-
 }

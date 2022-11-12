@@ -1,9 +1,7 @@
 package com.codegym.controller.serprovider;
 
-import com.codegym.model.Provider;
 import com.codegym.model.Services;
 import com.codegym.service.SerProvice.ISerProviderService;
-import com.codegym.service.provider.IProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
