@@ -55,4 +55,9 @@ public class serProviderController {
         serProviderService.delete(id);
         return new ResponseEntity<>(serviceOptional.get(), HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/findByProvider/{id}")
+    public ResponseEntity<Iterable<Services>> findByProvider(@PathVariable Long id){
+        Iterable<Services> services = serProviderService.findAllByProvider(id);
+        return new ResponseEntity<>(services, HttpStatus.OK);
+    }
 }

@@ -73,5 +73,13 @@ public class AvatarController {
         Iterable<Avatar> avatars = avatarService.findAll();
         return new ResponseEntity<>(avatars, HttpStatus.OK);
     }
+    @GetMapping("/findByProvider/{id}")
+    public ResponseEntity<Avatar> findbyProviderID(@PathVariable Long id){
+       Optional<Avatar> avatar = avatarService.findByProvider_id(id);
+        if (!avatar.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(avatar.get(), HttpStatus.OK);
+    }
 }
 

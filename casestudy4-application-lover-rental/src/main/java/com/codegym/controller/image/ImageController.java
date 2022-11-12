@@ -66,4 +66,10 @@ public class ImageController {
         Iterable<Image> images = iImageService.findAll();
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
+
+    @GetMapping("/findByProvider/{id}")
+    public ResponseEntity<Iterable<Image>> findByProvider(@PathVariable Long id){
+        Iterable<Image> images = iImageService.findByProvider_id(id);
+        return new ResponseEntity<>(images, HttpStatus.OK);
+    }
 }

@@ -3,6 +3,8 @@ package com.codegym.service.image;
 import com.codegym.model.Image;
 import com.codegym.service.IGeneralService;
 
-public interface IImageService extends IGeneralService<Image> {
+import java.util.Optional;
 
+public interface IImageService extends IGeneralService<Image> {
+        public Iterable<Image> findByProvider_id(Long id);
 }
