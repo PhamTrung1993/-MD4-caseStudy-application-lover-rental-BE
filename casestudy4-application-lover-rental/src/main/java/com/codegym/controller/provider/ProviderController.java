@@ -5,6 +5,8 @@ import com.codegym.model.Provider;
 import com.codegym.model.Rating;
 import com.codegym.model.Services;
 
+import com.codegym.model.User;
+import com.codegym.service.SerProvice.ISerProviderService;
 import com.codegym.service.provider.IProviderService;
 import com.codegym.service.rating.IRatingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ public class ProviderController {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private ISerProviderService iSerProviderService;
 
     @Autowired
     private IProviderService providerService;
@@ -65,6 +69,28 @@ public class ProviderController {
         provider.setId(providerOptional.get().getId());
         return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);
     }
+    @PutMapping("/updateUser/{idP}/{idU}")
+    public ResponseEntity<Provider> updateUserOfProvider(@PathVariable Long idP,@PathVariable Long idU, @RequestBody User user) throws IOException {
+        Optional<Provider> providerOptional = providerService.findById(idP);
+        if (!providerOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        providerService.updateUser(idP, idU);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping("/updateService/{idP}/{idS}")
+    public ResponseEntity<Provider> updateUserOfProvider(@PathVariable Long idP, @PathVariable Long idS) throws IOException {
+        providerService.get6ProviderByView();
+        Optional<Provider> providerOptional = providerService.findById(idP);
+        Optional<Services> servicesOptional = iSerProviderService.findById(idS);
+        if (!providerOptional.isPresent() && !servicesOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Services services = servicesOptional.get();
+        Provider provider = providerOptional.get();
+        providerService.setService(provider.getId(),services.getId());
+        return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Provider> deleteCustomer(@PathVariable Long id) {
@@ -75,9 +101,14 @@ public class ProviderController {
         providerService.delete(id);
         return new ResponseEntity<>(customerOptional.get(), HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/newestProvider")
+    public ResponseEntity<Provider> getNewestProvider(){
+        Optional<Provider> providerOptional = providerService.getNewestProvider();
+        return new ResponseEntity<>(providerOptional.get(), HttpStatus.OK);
+    }
 
     @PostMapping("/save")
-    public ResponseEntity<Provider> create(Provider provider, BindingResult bindingResult) throws IOException {
+    public ResponseEntity<Provider> create(@RequestBody Provider provider, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasFieldErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

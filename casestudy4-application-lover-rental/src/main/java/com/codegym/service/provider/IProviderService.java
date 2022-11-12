@@ -5,6 +5,7 @@ import com.codegym.model.Services;
 import com.codegym.service.IGeneralService;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public interface IProviderService extends IGeneralService<Provider> {
 
@@ -20,4 +21,10 @@ public interface IProviderService extends IGeneralService<Provider> {
     ArrayList<Services> get3Service(Long id);
 
     Iterable<Provider>  findAllByGenderContainingAndAgeContainingAndCity(String gender,String city,int fromAge, int toAge);
+
+    void setService(Long idP, Long idS);
+
+    Optional<Provider> getNewestProvider();
+
+    void updateUser(Long idP, Long idU);
 }

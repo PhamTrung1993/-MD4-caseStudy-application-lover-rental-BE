@@ -3,13 +3,13 @@ package com.codegym.repository.SerProvider;
 import com.codegym.model.Image;
 import com.codegym.model.Services;
 import org.springframework.data.jpa.repository.JpaRepository;
-<<<<<<< HEAD
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-=======
+
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
->>>>>>> 440e0e17376f2a5801823b430f84d37a6eaade9d
+
 
 @Repository
 public interface ISerProviderRepository extends JpaRepository<Services, Long> {

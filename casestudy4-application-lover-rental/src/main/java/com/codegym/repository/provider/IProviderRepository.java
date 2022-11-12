@@ -4,9 +4,11 @@ import com.codegym.model.Provider;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 @Repository
 public interface IProviderRepository extends JpaRepository<Provider, Long> {
@@ -28,11 +30,15 @@ public interface IProviderRepository extends JpaRepository<Provider, Long> {
     Iterable<Provider> list12ProviderSuitableForCity(@Param("city") String city);
     @Query(value = "select services_id from (select services_id from provider_services where provider_id = :id) as dich_vu_theo_user limit 3;",nativeQuery = true)
     Iterable<BigInteger> get3Service(@Param("id") Long id);
-<<<<<<< HEAD
 
 
-=======
     @Query(nativeQuery = true,value = "select * from provider where ((gender = :gender) and ((age between :fromAge and :toAge) or (city like :city ))) order by has_been_hired desc;")
     Iterable<Provider>  findAllByGenderContainingAndAgeContainingAndCity(@Param("gender") String gender,@Param("city") String city,@Param("fromAge") int fromAge,@Param("toAge") int toAge);
->>>>>>> 440e0e17376f2a5801823b430f84d37a6eaade9d
+    @Query(nativeQuery = true, value = "INSERT INTO `provider_service` (`provider_id`, `service_id`) VALUES (:idP, :idS)")
+    void setService(@Param("idP") Long idP, @Param("idS") Long idS);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM provider where provider.id = (select max(provider.id) from provider)")
+    Optional<Provider> getNewestProvider();
+    @Query(nativeQuery = true, value = "UPDATE `provider` SET `user_id` = :idU WHERE (`id` = :idP)")
+    Optional<Provider> getNewestProvider(@Param("idP") Long idP, @Param("idU") Long idU);
 }
