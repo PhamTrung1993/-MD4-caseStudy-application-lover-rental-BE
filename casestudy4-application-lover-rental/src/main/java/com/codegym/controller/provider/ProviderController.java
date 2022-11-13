@@ -1,15 +1,13 @@
 package com.codegym.controller.provider;
 
 
+import com.codegym.model.*;
 import com.codegym.model.DTO.ProviderDTO;
-import com.codegym.model.Provider;
-import com.codegym.model.Rating;
-import com.codegym.model.Services;
 
-import com.codegym.model.User;
 import com.codegym.service.SerProvice.ISerProviderService;
 import com.codegym.service.provider.IProviderService;
 import com.codegym.service.rating.IRatingService;
+import com.codegym.service.role.IRoleService;
 import com.codegym.service.user.IUserCRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -33,6 +31,9 @@ import java.util.Optional;
 @PropertySource("classpath:application.properties")
 @RequestMapping("/provider")
 public class ProviderController {
+
+    @Autowired
+    IRoleService roleService;
 
     @Autowired
     IRatingService ratingService;
@@ -131,8 +132,10 @@ public class ProviderController {
         provider.setHasBeenHired(providerDTO.getHasBeenHired());
         provider.setDescription(providerDTO.getDescription());
         provider.setCity(providerDTO.getCity());
-        Optional<User> user = userCRUDService.findById(providerDTO.getUserId());
-        provider.setUser(user.get());
+        User user = userCRUDService.findById(providerDTO.getUserId()).get();
+        Role role = roleService.findById(Long.parseLong(String.valueOf(4))).get();
+        user.setRole(role);
+        provider.setUser(user);
         List listServices = providerDTO.getServicesId();
         for (int i = 0; i < listServices.size(); i++) {
             Long serviceId = Long.parseLong(listServices.get(i).toString());
