@@ -1,12 +1,18 @@
 package com.codegym.controller.user;
 
+import com.codegym.model.Provider;
+import com.codegym.model.ProviderForm;
 import com.codegym.model.User;
 import com.codegym.service.user.IUserCRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 @CrossOrigin("*")
@@ -15,26 +21,39 @@ import java.util.Optional;
 public class UserController {
     @Autowired
     private IUserCRUDService userCRUDService;
-    @RequestMapping(method = RequestMethod.GET,value = "/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id){
-        Optional<User> userOptional=userCRUDService.findById(id);
-        if(!userOptional.isPresent()){
+
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable Long id) {
+        Optional<User> userOptional = userCRUDService.findById(id);
+        if (!userOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(userOptional.get(),HttpStatus.OK);
+        return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<User> createUser(@RequestBody User user){
+    public ResponseEntity<User> createUser(@RequestBody User user) {
         return new ResponseEntity<>(userCRUDService.save(user), HttpStatus.CREATED);
     }
-    @RequestMapping(method =RequestMethod.DELETE,value = "/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable Long id){
-        Optional<User> trainerOptional=userCRUDService.findById(id);
-        if(!trainerOptional.isPresent()){
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
+        Optional<User> trainerOptional = userCRUDService.findById(id);
+        if (!trainerOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         userCRUDService.delete(id);
-        return new ResponseEntity<>(trainerOptional.get(),HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(trainerOptional.get(), HttpStatus.NO_CONTENT);
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "user/{id}")
+    public ResponseEntity<User> editUser(@PathVariable Long id, @RequestBody User user) {
+        Optional<User> userOptional = userCRUDService.findById(id);
+        if (!userOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        user.setId(id);
+        userCRUDService.save(user);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
