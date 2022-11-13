@@ -6,36 +6,47 @@ import com.codegym.repository.avatar.IAvatarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Optional;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 @Service
-public class AvatarService implements IAvatarService{
+public class AvatarService {
 
-    @Autowired
-    IAvatarRepository avatarRepository;
+    public static byte[] compressAvatar(byte[] data) {
 
-    @Override
-    public Iterable<Avatar> findAll() {
-        return avatarRepository.findAll();
+        Deflater deflater = new Deflater();
+        deflater.setLevel(Deflater.BEST_COMPRESSION);
+        deflater.setInput(data);
+        deflater.finish();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] tmp = new byte[4*1024];
+        while (!deflater.finished()) {
+            int size = deflater.deflate(tmp);
+            outputStream.write(tmp, 0, size);
+        }
+        try {
+            outputStream.close();
+        } catch (Exception e) {
+        }
+        return outputStream.toByteArray();
     }
 
-    @Override
-    public Optional<Avatar> findById(Long id) {
-        return avatarRepository.findById(id);
-    }
-
-    @Override
-    public Avatar save(Avatar avatar) {
-        return avatarRepository.save(avatar);
-    }
-
-    @Override
-    public void delete(Long id) {
-        avatarRepository.deleteById(id);
-    }
-
-    @Override
-    public Optional<Avatar> findByProvider_id(Long id) {
-        return avatarRepository.findByProvider_Id(id);
+    public static byte[] decompressAvatar(byte[] data) {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] tmp = new byte[4*1024];
+        try {
+            while (!inflater.finished()) {
+                int count = inflater.inflate(tmp);
+                outputStream.write(tmp, 0, count);
+            }
+            outputStream.close();
+        } catch (Exception exception) {
+        }
+        return outputStream.toByteArray();
     }
 }

@@ -11,6 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface IAvatarRepository extends JpaRepository<Avatar, Long> {
-    @Query(value = "select * from avatars where provider_id = :id", nativeQuery = true)
-    Optional<Avatar> findByProvider_Id(@Param("id") Long id);
+
+    Optional<Avatar> findByName(String name);
 }

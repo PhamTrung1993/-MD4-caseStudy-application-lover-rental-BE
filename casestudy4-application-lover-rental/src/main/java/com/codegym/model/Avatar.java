@@ -1,25 +1,28 @@
 package com.codegym.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "avatars")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Avatar {
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "name")
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "provider_id")
-    private Provider provider;
+    @Column(name = "type")
+    private String type;
+
+    @Column(name = "image", unique = false, nullable = false, length = 100000)
+    private byte[] image;
+
 }

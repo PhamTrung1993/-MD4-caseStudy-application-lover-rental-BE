@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -49,8 +50,19 @@ public class Provider {
     private long hasBeenHired;
     private long view;
 
+    @ManyToOne
+    @JoinTable(name = "provider_avatar", joinColumns = {@JoinColumn(name = "provider_id")},
+            inverseJoinColumns = {@JoinColumn(name = "avatar_id")})
+    private Avatar avatar;
+
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    @OneToMany
+    @JoinTable(name = "provider_image", joinColumns = {@JoinColumn(name = "provider_id")},
+            inverseJoinColumns = {@JoinColumn(name = "image_id")})
+    private List<Image> images;
 }

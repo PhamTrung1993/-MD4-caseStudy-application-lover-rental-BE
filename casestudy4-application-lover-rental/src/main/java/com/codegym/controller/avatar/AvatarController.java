@@ -3,23 +3,25 @@ package com.codegym.controller.avatar;
 
 
 import com.codegym.model.Avatar;
-import com.codegym.model.DTO.AvatarForm;
+
 import com.codegym.model.Provider;
-import com.codegym.service.avatar.IAvatarService;
+import com.codegym.repository.avatar.IAvatarRepository;
+import com.codegym.service.avatar.AvatarService;
 import com.codegym.service.provider.IProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.util.Optional;
+
 
 @RestController
 @CrossOrigin("*")
@@ -28,57 +30,47 @@ import java.util.Optional;
 public class AvatarController {
 
     @Autowired
-    IProviderService providerService;
+    IAvatarRepository avatarRepository;
+
     @Autowired
-    IAvatarService avatarService;
+    IProviderService providerService;
 
-    @Value("${upload.path}")
-    private String fileUpload;
+    @PostMapping("/upload/avatar/{id}")
+    public ResponseEntity<AvatarUploadResponse> uplaodAvatar(@PathVariable Long id, @RequestParam("image") MultipartFile file)
+            throws IOException {
+        Provider provider = providerService.findById(id).get();
 
-    @PostMapping
-    public ResponseEntity<Avatar> create(@RequestBody AvatarForm avatarForm, BindingResult bindingResult) throws IOException {
-        if (bindingResult.hasFieldErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        MultipartFile multipartFile = avatarForm.getMultipartFile();
-        Avatar avatar = new Avatar();
-        if (avatarForm.getId() != null) {
-            avatar.setId(avatarForm.getId());
-            avatar.setProvider(providerService.findById(avatarForm.getProviderId()).get());
-            avatar.setName(avatarForm.getMultipartFile().getOriginalFilename());
-            FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + "/" + "saveavatar" + "/" + multipartFile.getOriginalFilename()));
-        }
-        avatarService.save(avatar);
-
-        return new ResponseEntity<>(avatar, HttpStatus.CREATED);
+        Avatar avatar = avatarRepository.save(Avatar.builder()
+                .name(file.getOriginalFilename())
+                .type(file.getContentType())
+                .image(AvatarService.compressAvatar(file.getBytes())).build());
+        provider.setAvatar(avatar);
+        providerService.save(provider);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new AvatarUploadResponse("Image uploaded successfully: " +
+                        file.getOriginalFilename()));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        Optional<Avatar> avatar = avatarService.findById(id);
-        if (!avatar.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Avatar avatar1 = avatar.get();
-        avatarService.delete(id);
-        if (avatar != null) {
-            avatarService.delete(avatar1.getId());
-            new File(fileUpload + avatar1.getName()).delete();
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(path = {"/get/avatar/info/{name}"})
+    public Avatar getAvatarDetails(@PathVariable("name") String name) throws IOException {
+
+        final Optional<Avatar> dbAvatar = avatarRepository.findByName(name);
+
+        return Avatar.builder()
+                .name(dbAvatar.get().getName())
+                .type(dbAvatar.get().getType())
+                .image(AvatarService.decompressAvatar(dbAvatar.get().getImage())).build();
     }
-    @GetMapping("lists")
-    public ResponseEntity<Iterable<Avatar>> listAvatar(){
-        Iterable<Avatar> avatars = avatarService.findAll();
-        return new ResponseEntity<>(avatars, HttpStatus.OK);
-    }
-    @GetMapping("/findByProvider/{id}")
-    public ResponseEntity<Avatar> findbyProviderID(@PathVariable Long id){
-       Optional<Avatar> avatar = avatarService.findByProvider_id(id);
-        if (!avatar.isPresent()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(avatar.get(), HttpStatus.OK);
+
+    @GetMapping(path = {"/get/avatar/{name}"})
+    public ResponseEntity<byte[]> getAvatar(@PathVariable("name") String name) throws IOException {
+
+        final Optional<Avatar> dbAvatar = avatarRepository.findByName(name);
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.valueOf(dbAvatar.get().getType()))
+                .body(AvatarService.decompressAvatar(dbAvatar.get().getImage()));
     }
 }
 

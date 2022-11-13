@@ -130,7 +130,7 @@ public class ProviderController {
         provider.setFacebook(providerDTO.getFacebook());
         provider.setHasBeenHired(providerDTO.getHasBeenHired());
         provider.setDescription(providerDTO.getDescription());
-         provider.setCity(providerDTO.getCity());
+        provider.setCity(providerDTO.getCity());
         Optional<User> user = userCRUDService.findById(providerDTO.getUserId());
         provider.setUser(user.get());
         List listServices = providerDTO.getServicesId();

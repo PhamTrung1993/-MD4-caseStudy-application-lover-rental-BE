@@ -1,39 +1,46 @@
 package com.codegym.service.image;
 
-import com.codegym.model.Image;
-import com.codegym.repository.image.IImageRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.io.ByteArrayOutputStream;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 @Service
-public class ImageService implements IImageService {
-    @Autowired
-    private IImageRepository imageRepository;
+public class ImageService {
+    public static byte[] compressImage(byte[] data) {
 
-    @Override
-    public Iterable<Image> findAll() {
-        return imageRepository.findAll();
+        Deflater deflater = new Deflater();
+        deflater.setLevel(Deflater.BEST_COMPRESSION);
+        deflater.setInput(data);
+        deflater.finish();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] tmp = new byte[4*1024];
+        while (!deflater.finished()) {
+            int size = deflater.deflate(tmp);
+            outputStream.write(tmp, 0, size);
+        }
+        try {
+            outputStream.close();
+        } catch (Exception e) {
+        }
+        return outputStream.toByteArray();
     }
 
-    @Override
-    public Optional<Image> findById(Long id) {
-        return imageRepository.findById(id);
-    }
-
-    @Override
-    public Image save(Image image) {
-       return imageRepository.save(image);
-    }
-
-    @Override
-    public void delete(Long id) {
-        imageRepository.deleteById(id);
-    }
-
-    @Override
-    public Iterable<Image> findByProvider_id(Long id) {
-        return imageRepository.findByProvider_Id(id);
+    public static byte[] decompressImage(byte[] data) {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] tmp = new byte[4*1024];
+        try {
+            while (!inflater.finished()) {
+                int count = inflater.inflate(tmp);
+                outputStream.write(tmp, 0, count);
+            }
+            outputStream.close();
+        } catch (Exception exception) {
+        }
+        return outputStream.toByteArray();
     }
 }
