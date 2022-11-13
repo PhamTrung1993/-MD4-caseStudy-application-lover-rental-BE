@@ -135,11 +135,6 @@ public class ProviderController {
     }
     @GetMapping("/rentListForGender/{gender}")
     public ResponseEntity<Iterable<Provider>> findProviderForGender(@PathVariable String gender) {
-        if (gender.equals("male")) {
-            gender = "female";
-        } else if (gender.equals("female")) {
-            gender = "male";
-        }
         Iterable<Provider> providers = providerService.findAllByGender(gender);
         return new ResponseEntity<>(providers, HttpStatus.OK);
     }
