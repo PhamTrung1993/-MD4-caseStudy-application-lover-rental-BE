@@ -1,12 +1,11 @@
 package com.codegym.controller.user;
 
-<<<<<<< HEAD
+
 import com.codegym.model.DTO.UserDTO;
 import com.codegym.model.Role;
-=======
-import com.codegym.model.Provider;
-import com.codegym.model.ProviderForm;
->>>>>>> 5abd48f0145f8208bb26ca7bbb03cc0a1467b1af
+
+
+
 import com.codegym.model.User;
 import com.codegym.service.role.IRoleService;
 import com.codegym.service.user.IUserCRUDService;
@@ -44,7 +43,7 @@ public class UserController {
         return new ResponseEntity<>(userOptional.get(), HttpStatus.OK);
     }
 
-<<<<<<< HEAD
+
     @PostMapping()
     public ResponseEntity<User> createUser(@RequestBody UserDTO userDTO){
         User user = new User();
@@ -58,41 +57,18 @@ public class UserController {
         user.setRole(role);
         return new ResponseEntity<>(userCRUDService.save(user), HttpStatus.CREATED);
     }
-    @DeleteMapping( "/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable Long id){
-        Optional<User> trainerOptional=userService.findById(id);
-        if(!trainerOptional.isPresent()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        userService.delete(id);
-        return new ResponseEntity<>(trainerOptional.get(),HttpStatus.NO_CONTENT);
-=======
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<User> createUser(@RequestBody User user) {
-        return new ResponseEntity<>(userCRUDService.save(user), HttpStatus.CREATED);
-    }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+
+    @DeleteMapping( "/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Long id) {
-        Optional<User> trainerOptional = userCRUDService.findById(id);
+        Optional<User> trainerOptional = userService.findById(id);
         if (!trainerOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        userCRUDService.delete(id);
+        userService.delete(id);
         return new ResponseEntity<>(trainerOptional.get(), HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "user/{id}")
-    public ResponseEntity<User> editUser(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> userOptional = userCRUDService.findById(id);
-        if (!userOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        user.setId(id);
-        userCRUDService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
->>>>>>> 5abd48f0145f8208bb26ca7bbb03cc0a1467b1af
-    }
     @GetMapping("/lists")
     public ResponseEntity<Iterable<User>> getAllUser(){
         Iterable<User> users = userService.findAll();
