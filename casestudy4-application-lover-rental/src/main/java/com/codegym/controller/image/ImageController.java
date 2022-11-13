@@ -1,20 +1,22 @@
 package com.codegym.controller.image;
 
 import com.codegym.model.Image;
-import com.codegym.model.ImageForm;
-import com.codegym.service.image.IImageService;
+
+
+import com.codegym.model.Provider;
+import com.codegym.repository.image.ImageRepository;
+import com.codegym.service.image.ImageService;
+import com.codegym.service.provider.IProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.util.FileCopyUtils;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -24,41 +26,47 @@ import java.util.Optional;
 @RequestMapping("/image")
 public class ImageController {
     @Autowired
-    IImageService iImageService;
+    ImageRepository imageRepository;
 
-    @Value("${upload.path}")
-    private String fileUpload;
+    @Autowired
+    IProviderService providerService;
 
-    @PostMapping
-    public ResponseEntity<Image> create(ImageForm imageForm, BindingResult bindingResult) throws IOException {
-        if (bindingResult.hasFieldErrors()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        MultipartFile multipartFile = imageForm.getFileImage();
-        Image image = new Image();
-        if (imageForm.getId() != null) {
-            image.setId(imageForm.getId());
+    @PostMapping("/upload/image/{providerId}")
+    public ResponseEntity<ImageUploadResponse> uplaodImage(@PathVariable Long providerId, @RequestParam("image") MultipartFile file)
+            throws IOException {
 
-            image.setImageName(imageForm.getFileImage().getOriginalFilename());
-            FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + "/" + "image" + "/" + multipartFile.getOriginalFilename()));
-        }
-        iImageService.save(image);
+        Provider provider = providerService.findById(providerId).get();
 
-        return new ResponseEntity<>(image, HttpStatus.CREATED);
+        Image image = imageRepository.save(Image.builder()
+                .name(file.getOriginalFilename())
+                .type(file.getContentType())
+                .image(ImageService.compressImage(file.getBytes())).build());
+        provider.getImages().add(image);
+        providerService.save(provider);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ImageUploadResponse("Image uploaded successfully: " +
+                        file.getOriginalFilename()));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        Optional<Image> image = iImageService.findById(id);
-        if (!image.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Image image1 = image.get();
-        iImageService.delete(id);
-        if (image != null) {
-            iImageService.delete(image1.getId());
-            new File(fileUpload + image1.getImageName()).delete();
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(path = {"/get/image/info/{name}"})
+    public Image getImageDetails(@PathVariable("name") String name) throws IOException {
+
+        final Optional<Image> dbImage = imageRepository.findByName(name);
+
+        return Image.builder()
+                .name(dbImage.get().getName())
+                .type(dbImage.get().getType())
+                .image(ImageService.decompressImage(dbImage.get().getImage())).build();
+    }
+
+    @GetMapping(path = {"/get/image/{name}"})
+    public ResponseEntity<byte[]> getImage(@PathVariable("name") String name) throws IOException {
+
+        final Optional<Image> dbImage = imageRepository.findByName(name);
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.valueOf(dbImage.get().getType()))
+                .body(ImageService.decompressImage(dbImage.get().getImage()));
     }
 }

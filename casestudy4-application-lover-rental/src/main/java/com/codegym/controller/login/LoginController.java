@@ -1,7 +1,6 @@
 package com.codegym.controller.login;
 
 import com.codegym.model.JwtResponse;
-import com.codegym.model.Role;
 import com.codegym.model.User;
 import com.codegym.service.jwt.JwtService;
 import com.codegym.service.user.IUserService;
@@ -12,12 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @RestController
 @CrossOrigin("*")

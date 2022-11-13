@@ -29,6 +29,11 @@ public class SerProviderService implements ISerProviderService{
 
     @Override
     public void delete(Long id) {
+            serProviderRepository.delete(serProviderRepository.findById(id).get());
+    }
 
+    @Override
+    public Iterable<Services> findAllByProvider(Long id) {
+        return serProviderRepository.findAllByProvider_Id(id);
     }
 }
