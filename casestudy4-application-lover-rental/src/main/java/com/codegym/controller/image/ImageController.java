@@ -1,8 +1,9 @@
 package com.codegym.controller.image;
 
 import com.codegym.model.Image;
-import com.codegym.model.ImageForm;
+import com.codegym.model.DTO.ImageForm;
 import com.codegym.service.image.IImageService;
+import com.codegym.service.provider.IProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -29,6 +30,9 @@ public class ImageController {
     @Value("${upload.path}")
     private String fileUpload;
 
+    @Autowired
+    private IProviderService providerService;
+
     @PostMapping
     public ResponseEntity<Image> create(ImageForm imageForm, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasFieldErrors()) {
@@ -38,12 +42,11 @@ public class ImageController {
         Image image = new Image();
         if (imageForm.getId() != null) {
             image.setId(imageForm.getId());
-
             image.setImageName(imageForm.getFileImage().getOriginalFilename());
+            image.setProvider(providerService.findById(imageForm.getProviderId()).get());
             FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + "/" + "saveimage" + "/" + multipartFile.getOriginalFilename()));
         }
         iImageService.save(image);
-
         return new ResponseEntity<>(image, HttpStatus.CREATED);
     }
 

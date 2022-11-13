@@ -3,7 +3,7 @@ package com.codegym.controller.avatar;
 
 
 import com.codegym.model.Avatar;
-import com.codegym.model.AvatarForm;
+import com.codegym.model.DTO.AvatarForm;
 import com.codegym.model.Provider;
 import com.codegym.service.avatar.IAvatarService;
 import com.codegym.service.provider.IProviderService;
@@ -36,7 +36,7 @@ public class AvatarController {
     private String fileUpload;
 
     @PostMapping
-    public ResponseEntity<Avatar> create(@PathVariable Long id,@RequestBody AvatarForm avatarForm, BindingResult bindingResult) throws IOException {
+    public ResponseEntity<Avatar> create(@RequestBody AvatarForm avatarForm, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasFieldErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -44,8 +44,7 @@ public class AvatarController {
         Avatar avatar = new Avatar();
         if (avatarForm.getId() != null) {
             avatar.setId(avatarForm.getId());
-            Provider provider = providerService.findById(id).get();
-            avatar.setProvider(provider);
+            avatar.setProvider(providerService.findById(avatarForm.getProviderId()).get());
             avatar.setName(avatarForm.getMultipartFile().getOriginalFilename());
             FileCopyUtils.copy(multipartFile.getBytes(), new File(fileUpload + "/" + "saveavatar" + "/" + multipartFile.getOriginalFilename()));
         }

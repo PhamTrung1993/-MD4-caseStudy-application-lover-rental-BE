@@ -1,4 +1,4 @@
-package com.codegym.model;
+package com.codegym.model.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,4 +15,6 @@ public class ImageForm {
     private Long id;
 
     private MultipartFile fileImage;
+
+    private Long providerId;
 }

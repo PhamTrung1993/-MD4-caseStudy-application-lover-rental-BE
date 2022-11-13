@@ -45,7 +45,6 @@ public class Provider {
     private Set<Services> service;
     private int price;
 
-    @GeneratedValue(generator = "active")
     private String status;
     private long hasBeenHired;
     private long view;

@@ -1,6 +1,7 @@
 package com.codegym.controller.provider;
 
 
+import com.codegym.model.DTO.ProviderDTO;
 import com.codegym.model.Provider;
 import com.codegym.model.Rating;
 import com.codegym.model.Services;
@@ -9,6 +10,7 @@ import com.codegym.model.User;
 import com.codegym.service.SerProvice.ISerProviderService;
 import com.codegym.service.provider.IProviderService;
 import com.codegym.service.rating.IRatingService;
+import com.codegym.service.user.IUserCRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -22,6 +24,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,6 +40,8 @@ public class ProviderController {
     @Autowired
     private Environment env;
 
+    @Autowired
+    IUserCRUDService userCRUDService;
     @Autowired
     private ISerProviderService iSerProviderService;
 
@@ -106,9 +111,32 @@ public class ProviderController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Provider> create(@RequestBody Provider provider, BindingResult bindingResult) throws IOException {
+    public ResponseEntity<Provider> create(@RequestBody ProviderDTO providerDTO, BindingResult bindingResult) throws IOException {
         if (bindingResult.hasFieldErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Provider provider = new Provider();
+        provider.setId(providerDTO.getId());
+        provider.setName(providerDTO.getName());
+        provider.setAge(providerDTO.getAge());
+        provider.setGender(providerDTO.getGender());
+        provider.setPrice(providerDTO.getPrice());
+        provider.setHobby(providerDTO.getHobby());
+        provider.setView(providerDTO.getView());
+        provider.setWeight(providerDTO.getWeight());
+        provider.setHeight(providerDTO.getHeight());
+        provider.setStatus(providerDTO.getStatus());
+        provider.setNationality(providerDTO.getNationality());
+        provider.setFacebook(providerDTO.getFacebook());
+        provider.setHasBeenHired(providerDTO.getHasBeenHired());
+        provider.setDescription(providerDTO.getDescription());
+         provider.setCity(providerDTO.getCity());
+        Optional<User> user = userCRUDService.findById(providerDTO.getUserId());
+        provider.setUser(user.get());
+        List listServices = providerDTO.getServicesId();
+        for (int i = 0; i < listServices.size(); i++) {
+            Long serviceId = Long.parseLong(listServices.get(i).toString());
+            provider.getService().add(iSerProviderService.findById(serviceId).get());
         }
         providerService.save(provider);
         return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);

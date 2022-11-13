@@ -1,4 +1,4 @@
-package com.codegym.model;
+package com.codegym.model.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,4 +14,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class AvatarForm {
     private Long id;
     private MultipartFile multipartFile;
+    private Long providerId;
 }
