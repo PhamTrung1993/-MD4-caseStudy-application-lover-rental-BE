@@ -45,15 +45,4 @@ public class UserController {
         userCRUDService.delete(id);
         return new ResponseEntity<>(trainerOptional.get(), HttpStatus.NO_CONTENT);
     }
-
-    @RequestMapping(method = RequestMethod.PUT, value = "user/{id}")
-    public ResponseEntity<User> editUser(@PathVariable Long id, @RequestBody User user) {
-        Optional<User> userOptional = userCRUDService.findById(id);
-        if (!userOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        user.setId(id);
-        userCRUDService.save(user);
-        return new ResponseEntity<>(user, HttpStatus.OK);
-    }
 }
