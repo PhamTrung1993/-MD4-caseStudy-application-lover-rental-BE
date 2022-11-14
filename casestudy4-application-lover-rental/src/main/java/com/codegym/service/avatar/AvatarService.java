@@ -1,14 +1,20 @@
-package com.codegym.service.image;
+package com.codegym.service.avatar;
 
+
+import com.codegym.model.Avatar;
+import com.codegym.repository.avatar.IAvatarRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Optional;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 @Service
-public class ImageService {
-    public static byte[] compressImage(byte[] data) {
+public class AvatarService {
+
+    public static byte[] compressAvatar(byte[] data) {
 
         Deflater deflater = new Deflater();
         deflater.setLevel(Deflater.BEST_COMPRESSION);
@@ -28,7 +34,7 @@ public class ImageService {
         return outputStream.toByteArray();
     }
 
-    public static byte[] decompressImage(byte[] data) {
+    public static byte[] decompressAvatar(byte[] data) {
         Inflater inflater = new Inflater();
         inflater.setInput(data);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);

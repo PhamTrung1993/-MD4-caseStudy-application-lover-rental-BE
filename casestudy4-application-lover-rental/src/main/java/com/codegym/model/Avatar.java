@@ -5,12 +5,12 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "image")
+@Table(name = "avatars")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Image {
+public class Avatar {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

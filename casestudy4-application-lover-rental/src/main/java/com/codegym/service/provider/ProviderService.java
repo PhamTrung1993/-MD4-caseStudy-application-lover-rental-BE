@@ -82,4 +82,23 @@ public class ProviderService implements IProviderService {
         return services;
     }
 
+    @Override
+    public Iterable<Provider> findAllByGenderContainingAndAgeContainingAndCity(String gender, String city, int fromAge, int toAge) {
+        return providerRepository.findAllByGenderContainingAndAgeContainingAndCity(gender, city, fromAge, toAge);
+    }
+
+    @Override
+    public void setService(Long idP, Long idS) {
+        providerRepository.setService(idP, idS);
+    }
+
+    @Override
+    public Optional<Provider> getNewestProvider() {
+        return providerRepository.getNewestProvider();
+    }
+
+    @Override
+    public void updateUser(Long idP, Long idU) {
+        providerRepository.setService(idP,idU);
+    }
 }

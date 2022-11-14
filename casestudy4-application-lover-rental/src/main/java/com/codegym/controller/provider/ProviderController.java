@@ -1,34 +1,28 @@
 package com.codegym.controller.provider;
 
 
-import com.codegym.model.Image;
-import com.codegym.model.Provider;
-import com.codegym.model.ProviderForm;
+import com.codegym.model.*;
+import com.codegym.model.DTO.ProviderDTO;
 
-import com.codegym.model.Services;
 import com.codegym.service.SerProvice.ISerProviderService;
-
-import com.codegym.service.image.IImageService;
 import com.codegym.service.provider.IProviderService;
+import com.codegym.service.rating.IRatingService;
+import com.codegym.service.role.IRoleService;
+import com.codegym.service.user.IUserCRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 
-
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import java.util.ArrayList;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -37,23 +31,25 @@ import java.util.Optional;
 @PropertySource("classpath:application.properties")
 @RequestMapping("/provider")
 public class ProviderController {
+
+    @Autowired
+    IRoleService roleService;
+
+    @Autowired
+    IRatingService ratingService;
+
     @Autowired
     private Environment env;
 
-    @Value("${upload.path}")
-    private String fileUpload;
-
     @Autowired
-    private IImageService imageService;
+    IUserCRUDService userCRUDService;
+    @Autowired
+    private ISerProviderService iSerProviderService;
 
     @Autowired
     private IProviderService providerService;
 
 
-    @ModelAttribute("Image")
-    public Iterable<Image> allProvinces() {
-        return imageService.findAll();
-    }
 
     @GetMapping("/lists")
     public ResponseEntity<Iterable<Provider>> showAllUser() {
@@ -71,18 +67,33 @@ public class ProviderController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Provider> updateProvider(@PathVariable Long id, @RequestBody ProviderForm providerForm) throws IOException {
-        if (id != null){
-            providerForm.setId(id);
-            MultipartFile avatar = providerForm.getAvatar();
-            Provider provider = new Provider();
-            provider.setAvatar(avatar.getOriginalFilename());
-            provider.buildByProvider(providerForm);
-            FileCopyUtils.copy(avatar.getBytes(), new File(fileUpload + "/" + "avatar" + providerForm.getId()+ "/" + avatar.getOriginalFilename()));
-            providerService.save(provider);
-            return new ResponseEntity<>(provider, HttpStatus.OK);
+    public ResponseEntity<Provider> updateProvider(@PathVariable Long id, @RequestBody Provider provider) throws IOException {
+        Optional<Provider> providerOptional = providerService.findById(id);
+        if (!providerOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        provider.setId(providerOptional.get().getId());
+        return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);
+    }
+    @PutMapping("/updateUser/{idP}/{idU}")
+    public ResponseEntity<Provider> updateUserOfProvider(@PathVariable Long idP,@PathVariable Long idU, @RequestBody User user) throws IOException {
+        Optional<Provider> providerOptional = providerService.findById(idP);
+        if (!providerOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        providerService.updateUser(idP, idU);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping("/updateService/{idP}/{idS}")
+    public ResponseEntity<Provider> updateUserOfProvider(@PathVariable Long idP, @PathVariable Long idU) throws IOException {
+        providerService.get6ProviderByView();
+        Optional<Provider> providerOptional = providerService.findById(idP);
+        Optional<Services> servicesOptional = iSerProviderService.findById(idU);
+        if (!providerOptional.isPresent() && !servicesOptional.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        providerService.setService(idP,idU);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -94,32 +105,44 @@ public class ProviderController {
         providerService.delete(id);
         return new ResponseEntity<>(customerOptional.get(), HttpStatus.NO_CONTENT);
     }
+    @GetMapping("/newestProvider")
+    public ResponseEntity<Provider> getNewestProvider(){
+        Optional<Provider> providerOptional = providerService.getNewestProvider();
+        return new ResponseEntity<>(providerOptional.get(), HttpStatus.OK);
+    }
 
     @PostMapping("/save")
-    public ResponseEntity<Provider> create(ProviderForm providerForm, BindingResult bindingResult) throws IOException {
-        if (bindingResult.hasFieldErrors()) {
+    public ResponseEntity<Provider> create(@RequestBody ProviderDTO providerDTO, BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasFieldErrors()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        MultipartFile avatar = providerForm.getAvatar();
-        List<MultipartFile> multipartFiles = providerForm.getImage();
         Provider provider = new Provider();
-        if (providerForm.getId() != null) {
-            provider.setId(providerForm.getId());
+        provider.setId(providerDTO.getId());
+        provider.setName(providerDTO.getName());
+        provider.setAge(providerDTO.getAge());
+        provider.setGender(providerDTO.getGender());
+        provider.setPrice(providerDTO.getPrice());
+        provider.setHobby(providerDTO.getHobby());
+        provider.setView(providerDTO.getView());
+        provider.setWeight(providerDTO.getWeight());
+        provider.setHeight(providerDTO.getHeight());
+        provider.setStatus(providerDTO.getStatus());
+        provider.setNationality(providerDTO.getNationality());
+        provider.setFacebook(providerDTO.getFacebook());
+        provider.setHasBeenHired(providerDTO.getHasBeenHired());
+        provider.setDescription(providerDTO.getDescription());
+        provider.setCity(providerDTO.getCity());
+        User user = userCRUDService.findById(providerDTO.getUserId()).get();
+        Role role = roleService.findById(Long.parseLong(String.valueOf(4))).get();
+        user.setRole(role);
+        provider.setUser(user);
+        List listServices = providerDTO.getServicesId();
+        for (int i = 0; i < listServices.size(); i++) {
+            Long serviceId = Long.parseLong(listServices.get(i).toString());
+            provider.getService().add(iSerProviderService.findById(serviceId).get());
         }
-        provider.setAvatar(avatar.getOriginalFilename());
-        FileCopyUtils.copy(avatar.getBytes(), new File(fileUpload + "/" + "avatar" + providerForm.getId()+ "/" + avatar.getOriginalFilename()));
-        provider.buildByProvider(providerForm);
         providerService.save(provider);
-        if (multipartFiles != null) {
-            for (MultipartFile multipartFiler : multipartFiles) {
-                Image image = new Image();
-                FileCopyUtils.copy(multipartFiler.getBytes(), new File(fileUpload + "/" + "image" + providerForm.getId()+ "/" + multipartFiler.getOriginalFilename()));
-                image.setImageName(multipartFiler.getOriginalFilename());
-                provider.getImage().add(image);
-                imageService.save(image);
-            }
-        }
-        return new ResponseEntity<>(provider, HttpStatus.CREATED);
+        return new ResponseEntity<>(providerService.save(provider), HttpStatus.OK);
     }
 
     @GetMapping("/rent8Female")
@@ -135,11 +158,6 @@ public class ProviderController {
     }
     @GetMapping("/rentListForGender/{gender}")
     public ResponseEntity<Iterable<Provider>> findProviderForGender(@PathVariable String gender) {
-        if (gender.equals("male")) {
-            gender = "female";
-        } else if (gender.equals("female")) {
-            gender = "male";
-        }
         Iterable<Provider> providers = providerService.findAllByGender(gender);
         return new ResponseEntity<>(providers, HttpStatus.OK);
     }
@@ -158,5 +176,43 @@ public class ProviderController {
         ArrayList<Services> serProviders = providerService.get3Service(userId);
         return new ResponseEntity<>(serProviders, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/comment/{id}")
+    public ResponseEntity<Rating> insertComment(@PathVariable Long id, @RequestBody Rating rating, BindingResult bindingResult) throws IOException{
+        if (bindingResult.hasFieldErrors()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Rating rating1 = new Rating();
+        Provider provider = providerService.findById(id).get();
+        rating1.setProvider(provider);
+        rating1.setComment(rating.getComment());
+        return new ResponseEntity<>(rating1, HttpStatus.OK);
+    }
+    @DeleteMapping("/comment/{id}")
+    public ResponseEntity<Rating> delComment(@PathVariable Long id){
+        Optional<Rating> rating = ratingService.findById(id);
+        if (!rating.isPresent()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ratingService.delete(id);
+        return new ResponseEntity<>(rating.get(), HttpStatus.OK);
+    }
+
+    @GetMapping("/showRatingProvider/{id}")
+    private ResponseEntity<Iterable<Rating>> showRatingProvider(@PathVariable Long id) {
+        Iterable<Rating> ratingProvider = ratingService.findByProvider_Id(id);
+        return new ResponseEntity<>(ratingProvider, HttpStatus.OK);
+    }
+    @GetMapping("/findProviderByGenderAndCityAndAge")
+    public ResponseEntity<Iterable<Provider>> findProviderByGenderAndCityAndAge( String gender, String city, int fromAge, int toAge) {
+        Iterable<Provider> providers = providerService.findAllByGenderContainingAndAgeContainingAndCity(gender,'%' + city + '%', fromAge, toAge);
+        return new ResponseEntity<>(providers, HttpStatus.OK);
+
+    }
+    @GetMapping("/rent6Provider")
+    private ResponseEntity<Iterable<Provider>> rent6Provider() {
+        Iterable<Provider> providers = providerService.get6ProviderByView();
+        return new ResponseEntity<>(providers, HttpStatus.OK);
     }
 }
