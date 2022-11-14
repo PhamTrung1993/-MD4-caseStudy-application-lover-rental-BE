@@ -1,9 +1,7 @@
 package com.codegym.controller.order;
 
 import com.codegym.model.Order;
-import com.codegym.model.Provider;
-import com.codegym.model.User;
-import com.codegym.service.order.IOrderService;
+import com.codegym.service.image.order.IOrderService;
 import com.codegym.service.provider.IProviderService;
 import com.codegym.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
