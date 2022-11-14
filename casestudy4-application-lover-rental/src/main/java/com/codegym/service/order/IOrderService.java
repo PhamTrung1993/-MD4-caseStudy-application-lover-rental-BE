@@ -17,4 +17,6 @@ public interface IOrderService extends IGeneralService<Order> {
     Iterable<Order> findAllByProvider(Provider provider);
 
     Iterable<Order> getAllCompletedOrder();
+
+//    Iterable<Order> showOderByUserIdAndProviderId(Long id);
 }

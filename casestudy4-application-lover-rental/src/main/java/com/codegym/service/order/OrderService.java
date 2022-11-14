@@ -59,6 +59,11 @@ public class OrderService implements IOrderService {
         return orderRepository.getAllCompletedOrder();
     }
 
+//    @Override
+//    public Iterable<Order> showOderByUserIdAndProviderId(Long id) {
+//        return  orderRepository.showOderByUserIdAndProviderId(id);
+//    }
+
     @Override
     public void delete(Long id) {
 

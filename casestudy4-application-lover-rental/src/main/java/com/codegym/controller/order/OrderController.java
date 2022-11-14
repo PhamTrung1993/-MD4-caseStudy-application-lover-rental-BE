@@ -1,8 +1,11 @@
 package com.codegym.controller.order;
 
 import com.codegym.model.Order;
+import com.codegym.model.Provider;
+import com.codegym.model.User;
 import com.codegym.service.order.IOrderService;
 import com.codegym.service.provider.IProviderService;
+import com.codegym.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
@@ -20,11 +23,33 @@ public class OrderController {
 
     @Autowired
     private IProviderService providerService;
+    @Autowired
+    private IUserService userService;
 
     //    show tất cả order
     @GetMapping("/orders")
     public ResponseEntity<Iterable<Order>> findAll() {
         return new ResponseEntity<>(orderService.findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping("/orders")
+    public ResponseEntity<Order> orderCreate(@RequestBody Order order) {
+//        order.setId(order.getId());
+        order.setStatus("notpaid");
+//        Long userId = order.getUser().getId();
+//        Long providerId = order.getProvider().getId();
+//        Provider provider = providerService.findById(providerId).get();
+//        User user = userService.findById(userId).get();
+//        order.setUser(user);
+//        order.setProvider(provider);
+
+        try {
+            orderService.save(order);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     //    show order theo khách hàng
@@ -39,9 +64,11 @@ public class OrderController {
         return new ResponseEntity<>(orderService.getAllOrderByProvider(id), HttpStatus.OK);
     }
 
+//    show order tên user và name
+
     //    Tìm kiếm order theo id
     @GetMapping("/orders/{id}")
-    public ResponseEntity<Optional<Order>> findOne(@PathVariable Long id) {
+    public ResponseEntity<Optional<Order>> showOderByUserIdAndProviderId(@PathVariable Long id) {
         return new ResponseEntity<>(orderService.findById(id), HttpStatus.OK);
     }
 
@@ -56,13 +83,20 @@ public class OrderController {
         return new ResponseEntity<>(orderOptional.get(), HttpStatus.NO_CONTENT);
     }
 
-    //    sủa trạng thái chưa biết dúng hay sai
-    @PutMapping("/orders/{id}/changeStatus")
+    //    check sửa trạng thái
+    @PutMapping("/orders/{id}")
     public ResponseEntity<Order> changeStatus(@PathVariable Long id, String status) {
-        Order order = orderService.findById(id).get();
-        order.setStatus(status);
+        Optional<Order> orderOptional = orderService.findById(id);
+        if (!orderOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Order order = orderOptional.get();
+//        chưa biết set thẳng hay set như thế nào . còn đây là kiểu ăn sổi
+        order.setStatus("paid");
+//        order.setStatus(status);
+
         orderService.save(order);
-        return new ResponseEntity<>(order, HttpStatus.OK);
+        return new ResponseEntity<>(orderOptional.get(), HttpStatus.OK);
     }
 
 
