@@ -76,10 +76,13 @@ public class UserController {
         userService.delete(id);
         return new ResponseEntity<>(trainerOptional.get(), HttpStatus.NO_CONTENT);
     }
+<<<<<<< HEAD
 
     @GetMapping("/lists")
     public ResponseEntity<Iterable<User>> getAllUser(){
         Iterable<User> users = userService.findAll();
         return  new ResponseEntity<>(users,HttpStatus.OK);
     }
+=======
+>>>>>>> login
 }
