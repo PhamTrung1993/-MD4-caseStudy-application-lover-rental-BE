@@ -161,8 +161,8 @@ public class ProviderController {
         Iterable<Provider> providers = providerService.findAllByGender(gender);
         return new ResponseEntity<>(providers, HttpStatus.OK);
     }
-    @GetMapping("/findProviderByFullName")
-    public ResponseEntity<Iterable<Provider>> findProviderByFullName( String queryName) {
+    @GetMapping("/findProviderByFullName/{queryName}")
+    public ResponseEntity<Iterable<Provider>> findProviderByFullName(@PathVariable String queryName) {
         Iterable<Provider> providers = providerService.findAllByFullName('%' + queryName + '%');
         return new ResponseEntity<>(providers, HttpStatus.OK);
     }
