@@ -27,4 +27,6 @@ public interface IProviderService extends IGeneralService<Provider> {
     Optional<Provider> getNewestProvider();
 
     void updateUser(Long idP, Long idU);
+
+    Optional<Provider> findByUser_Id(Long userId);
 }

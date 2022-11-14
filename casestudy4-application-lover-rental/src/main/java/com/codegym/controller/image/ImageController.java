@@ -41,7 +41,7 @@ public class ImageController {
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .image(ImageService.compressImage(file.getBytes())).build());
-        provider.getImages().add(image);
+//        provider.getImages().add(image);
         providerService.save(provider);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ImageUploadResponse("Image uploaded successfully: " +

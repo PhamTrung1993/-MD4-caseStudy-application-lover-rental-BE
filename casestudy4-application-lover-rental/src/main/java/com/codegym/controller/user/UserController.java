@@ -2,11 +2,13 @@ package com.codegym.controller.user;
 
 
 import com.codegym.model.DTO.UserDTO;
+import com.codegym.model.Provider;
 import com.codegym.model.Role;
 
 
 
 import com.codegym.model.User;
+import com.codegym.service.provider.IProviderService;
 import com.codegym.service.role.IRoleService;
 import com.codegym.service.user.IUserCRUDService;
 import com.codegym.service.user.IUserService;
@@ -25,6 +27,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    IProviderService providerService;
 
     @Autowired
     IRoleService roleService;
@@ -65,6 +70,9 @@ public class UserController {
         if (!trainerOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+//        User user = trainerOptional.get();
+//        Provider provider = providerService.findByUser_Id(user.getId()).get();
+//        providerService.delete(provider.getId());
         userService.delete(id);
         return new ResponseEntity<>(trainerOptional.get(), HttpStatus.NO_CONTENT);
     }

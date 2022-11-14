@@ -41,4 +41,6 @@ public interface IProviderRepository extends JpaRepository<Provider, Long> {
     Optional<Provider> getNewestProvider();
     @Query(nativeQuery = true, value = "UPDATE `provider` SET `user_id` = :idU WHERE `id` = :idP")
     Optional<Provider> getNewestProvider(@Param("idP") Long idP, @Param("idU") Long idU);
+
+    Optional<Provider> findByUser_Id(Long id);
 }
