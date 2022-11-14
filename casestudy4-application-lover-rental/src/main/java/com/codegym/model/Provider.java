@@ -50,10 +50,10 @@ public class Provider {
     private long hasBeenHired;
     private long view;
 
-    @ManyToOne
-    @JoinTable(name = "provider_avatar", joinColumns = {@JoinColumn(name = "provider_id")},
-            inverseJoinColumns = {@JoinColumn(name = "avatar_id")})
-    private Avatar avatar;
+//    @ManyToOne
+//    @JoinTable(name = "provider_avatar", joinColumns = {@JoinColumn(name = "provider_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "avatar_id")})
+//    private Avatar avatar;
 
 
     @OneToOne

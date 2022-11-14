@@ -44,7 +44,7 @@ public class AvatarController {
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .image(AvatarService.compressAvatar(file.getBytes())).build());
-        provider.setAvatar(avatar);
+//        provider.setAvatar(avatar);
         providerService.save(provider);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new AvatarUploadResponse("Image uploaded successfully: " +

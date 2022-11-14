@@ -94,7 +94,6 @@ public class OrderController {
 //        chưa biết set thẳng hay set như thế nào . còn đây là kiểu ăn sổi
         order.setStatus("paid");
 //        order.setStatus(status);
-
         orderService.save(order);
         return new ResponseEntity<>(orderOptional.get(), HttpStatus.OK);
     }
