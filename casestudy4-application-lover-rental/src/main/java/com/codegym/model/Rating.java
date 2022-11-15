@@ -19,7 +19,7 @@ public class Rating {
     private Long id;
     private String comment;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "provider_id")
     private Provider provider;
 }

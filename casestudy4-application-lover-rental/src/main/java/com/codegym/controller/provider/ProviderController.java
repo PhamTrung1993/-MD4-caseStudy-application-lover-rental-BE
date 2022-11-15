@@ -97,10 +97,17 @@ public class ProviderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Provider> deleteCustomer(@PathVariable Long id) {
+    public ResponseEntity<Provider> deleteProvider(@PathVariable Long id) {
         Optional<Provider> customerOptional = providerService.findById(id);
         if (!customerOptional.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        List<Rating> listRating;
+        listRating = (List<Rating>) ratingService.findByProvider_Id(id);
+        if (listRating.size() > 0){
+            for (int i = 0; i < listRating.size(); i++) {
+                ratingService.delete(listRating.get(i).getId());
+        }
         }
         providerService.delete(id);
         return new ResponseEntity<>(customerOptional.get(), HttpStatus.NO_CONTENT);
