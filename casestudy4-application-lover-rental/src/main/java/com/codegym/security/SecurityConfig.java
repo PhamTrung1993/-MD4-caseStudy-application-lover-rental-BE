@@ -26,32 +26,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return  super.authenticationManager();
+    public AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
 
-    @Bean
-    public RestAuthenticationEntryPoint restAuthenticationEntryPoint(){
-        return new RestAuthenticationEntryPoint();
-    }
-
-
-    @Autowired
-    public void configureGlobalSecurity(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());
-    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/**");
-        http.httpBasic().authenticationEntryPoint(restAuthenticationEntryPoint());
         http.authorizeRequests()
+<<<<<<< HEAD
                 .antMatchers("/", "/login","/**").permitAll()
 //                .and().authorizeRequests().antMatchers("/po**").hasAnyRole("PO")
 //                .and().authorizeRequests().antMatchers("/admin**").hasAnyRole("ADMIN","PO")
 //                .and().authorizeRequests().antMatchers("/provider**").hasAnyRole("ADMIN","PO","PROVIDER")
 //                .and().authorizeRequests().antMatchers("/user**").hasAnyRole("ADMIN","PO","PROVIDER","USER")
+=======
+                .antMatchers("/login").permitAll()
+                .and().authorizeRequests().antMatchers("/po/**").hasAnyRole("PO")
+                .and().authorizeRequests().antMatchers("/admin/**").hasAnyRole("ADMIN","PO")
+                .and().authorizeRequests().antMatchers("/provider/**").hasAnyRole("ADMIN","PROVIDER","PO")
+                .and().authorizeRequests().antMatchers("/user/**").hasAnyRole("ADMIN","PROVIDER","PO","USER")
+>>>>>>> login
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
         http.csrf().disable();
