@@ -61,8 +61,8 @@ public class Provider {
     private User user;
 
 
-    @OneToMany
-    @JoinTable(name = "provider_image", joinColumns = {@JoinColumn(name = "provider_id")},
-            inverseJoinColumns = {@JoinColumn(name = "image_id")})
-    private List<Image> images;
+//    @OneToMany
+//    @JoinTable(name = "provider_image", joinColumns = {@JoinColumn(name = "provider_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "image_id")})
+//    private List<Image> images;
 }

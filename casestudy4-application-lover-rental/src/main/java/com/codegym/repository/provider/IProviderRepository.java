@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface IProviderRepository extends JpaRepository<Provider, Long> {
-    @Query(nativeQuery = true, value = "select * from provider where name like :name;")
+    @Query(nativeQuery = true, value = "select * from provider where name like :name")
     Iterable<Provider>findAllByFullName(@Param("name") String name);
     @Query(nativeQuery = true,value = "select * from provider where gender = 'nu' order by has_been_hired DESC limit 8;")
     Iterable<Provider> getProviderByHasBeenHired8female();
@@ -41,4 +41,6 @@ public interface IProviderRepository extends JpaRepository<Provider, Long> {
     Optional<Provider> getNewestProvider();
     @Query(nativeQuery = true, value = "UPDATE `provider` SET `user_id` = :idU WHERE `id` = :idP")
     Optional<Provider> getNewestProvider(@Param("idP") Long idP, @Param("idU") Long idU);
+
+    Optional<Provider> findByUser_Id(Long id);
 }

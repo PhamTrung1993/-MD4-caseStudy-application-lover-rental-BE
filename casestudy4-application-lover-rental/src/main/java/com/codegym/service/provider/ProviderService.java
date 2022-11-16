@@ -101,4 +101,10 @@ public class ProviderService implements IProviderService {
     public void updateUser(Long idP, Long idU) {
         providerRepository.setService(idP,idU);
     }
+
+
+    @Override
+    public Optional<Provider> findByUser_Id(Long userId) {
+        return providerRepository.findByUser_Id(userId);
+    }
 }
