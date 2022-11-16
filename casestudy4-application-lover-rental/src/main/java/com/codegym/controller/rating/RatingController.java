@@ -24,7 +24,7 @@ public class RatingController {
     @Autowired
     IProviderService provideService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/{providerId}")
     public ResponseEntity<Iterable<Rating>> getRating(@PathVariable Long providerId){
         Iterable<Rating> ratings = ratingService.findByProvider_Id(providerId);
         return new ResponseEntity<>(ratings, HttpStatus.OK);

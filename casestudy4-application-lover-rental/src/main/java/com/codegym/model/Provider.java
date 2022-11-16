@@ -41,8 +41,8 @@ public class Provider {
     private String facebook;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "provider_service", joinColumns = {@JoinColumn(name = "provider_id")},
-            inverseJoinColumns = {@JoinColumn(name = "service_id")})
+    @JoinTable(name = "provider_services", joinColumns = {@JoinColumn(name = "provider_id")},
+            inverseJoinColumns = {@JoinColumn(name = "services_id")})
     private Set<Services> service;
     private int price;
 

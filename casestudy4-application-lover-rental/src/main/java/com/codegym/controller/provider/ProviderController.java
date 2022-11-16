@@ -178,8 +178,8 @@ public class ProviderController {
         Iterable<Provider> providers = providerService.list12ProviderSuitableForCity(city);
         return  new ResponseEntity<>(providers, HttpStatus.OK);
     }
-    @GetMapping("/serProvidedByUser")
-    public ResponseEntity<ArrayList<Services>> get3SerProviderRandom(Long userId) {
+    @GetMapping("/serProvidedByUser/{userId}")
+    public ResponseEntity<ArrayList<Services>> get3SerProviderRandom(@PathVariable Long userId) {
         ArrayList<Services> serProviders = providerService.get3Service(userId);
         return new ResponseEntity<>(serProviders, HttpStatus.OK);
 
