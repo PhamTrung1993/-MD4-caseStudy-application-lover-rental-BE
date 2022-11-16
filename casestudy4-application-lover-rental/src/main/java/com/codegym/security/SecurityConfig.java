@@ -31,23 +31,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-<<<<<<< HEAD
-                .antMatchers("/", "/login","/**").permitAll()
+                .antMatchers("/", "/login", "/**").permitAll()
 //                .and().authorizeRequests().antMatchers("/po**").hasAnyRole("PO")
 //                .and().authorizeRequests().antMatchers("/admin**").hasAnyRole("ADMIN","PO")
 //                .and().authorizeRequests().antMatchers("/provider**").hasAnyRole("ADMIN","PO","PROVIDER")
 //                .and().authorizeRequests().antMatchers("/user**").hasAnyRole("ADMIN","PO","PROVIDER","USER")
-=======
                 .antMatchers("/login").permitAll()
                 .and().authorizeRequests().antMatchers("/po/**").hasAnyRole("PO")
-                .and().authorizeRequests().antMatchers("/admin/**").hasAnyRole("ADMIN","PO")
-                .and().authorizeRequests().antMatchers("/provider/**").hasAnyRole("ADMIN","PROVIDER","PO")
-                .and().authorizeRequests().antMatchers("/user/**").hasAnyRole("ADMIN","PROVIDER","PO","USER")
->>>>>>> login
+                .and().authorizeRequests().antMatchers("/admin/**").hasAnyRole("ADMIN", "PO")
+                .and().authorizeRequests().antMatchers("/provider/**").hasAnyRole("ADMIN", "PROVIDER", "PO")
+                .and().authorizeRequests().antMatchers("/user/**").hasAnyRole("ADMIN", "PROVIDER", "PO", "USER")
                 .and()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"));
         http.csrf().disable();
@@ -65,6 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             return configuration;
         });
     }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());

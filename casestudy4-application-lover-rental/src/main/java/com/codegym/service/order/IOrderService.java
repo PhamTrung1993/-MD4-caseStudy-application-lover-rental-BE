@@ -1,4 +1,4 @@
-package com.codegym.service.image.order;
+package com.codegym.service.order;
 
 import com.codegym.model.Order;
 import com.codegym.model.Provider;

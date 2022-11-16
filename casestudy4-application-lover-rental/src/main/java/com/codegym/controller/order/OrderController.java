@@ -1,13 +1,17 @@
 package com.codegym.controller.order;
 
+import com.codegym.model.DTO.OrderDTO;
 import com.codegym.model.Order;
-import com.codegym.service.image.order.IOrderService;
+import com.codegym.model.Provider;
+import com.codegym.model.User;
+import com.codegym.service.order.IOrderService;
 import com.codegym.service.provider.IProviderService;
 import com.codegym.service.user.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -31,16 +35,18 @@ public class OrderController {
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<Order> orderCreate(@RequestBody Order order) {
-//        order.setId(order.getId());
+    public ResponseEntity<Order> orderCreate(@RequestBody OrderDTO orderDTO) {
+        Provider provider = new Provider();
+        provider = providerService.findById(orderDTO.getProviderId()).get();
+        User user = new User();
+        user = userService.findById(orderDTO.getUserId()).get();
+        Order order = new Order();
+        order.setProvider(provider);
         order.setStatus("notpaid");
-//        Long userId = order.getUser().getId();
-//        Long providerId = order.getProvider().getId();
-//        Provider provider = providerService.findById(providerId).get();
-//        User user = userService.findById(userId).get();
-//        order.setUser(user);
-//        order.setProvider(provider);
-
+        order.setUser(user);
+        order.setId(orderDTO.getId());
+        order.setTimeRent(orderDTO.getTimeRent());
+        order.setStartTime(orderDTO.getStartTime());
         try {
             orderService.save(order);
 
@@ -51,13 +57,13 @@ public class OrderController {
     }
 
     //    show order theo khách hàng
-    @GetMapping("/user/{id}/orders")
+    @GetMapping("/user/orders/{id}")
     public ResponseEntity<Iterable<Order>> findAllOrderByRenter(@PathVariable("id") Long id) {
         return new ResponseEntity<>(orderService.getAllOrderByRenter(id), HttpStatus.OK);
     }
 
     //    show order theo nhà cung cấp
-    @GetMapping("/provider/{id}/orders")
+    @GetMapping("/provider/orders/{id}")
     public ResponseEntity<Iterable<Order>> findAllOrderByProvider(@PathVariable Long id) {
         return new ResponseEntity<>(orderService.getAllOrderByProvider(id), HttpStatus.OK);
     }
